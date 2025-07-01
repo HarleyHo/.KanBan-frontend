@@ -8,16 +8,10 @@ import {
 const { Title } = Typography;
 import { useState } from "react";
 import { BarsOutlined, EditOutlined } from "@ant-design/icons";
-import Assignee from "./Assignee.jsx";
-import Priority from "./Priority.jsx";
 
-export default function Detail({ task }) {
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+export default function Detail({ task, isDetailOpen, setIsDetailOpen }) {
   const [readonly, setReadonly] = useState(true);
-
-  const showTaskDetail = () => {
-    setIsDetailOpen(true);
-  };
 
   const showTaskEdit = () => {
     setReadonly(false);
@@ -39,7 +33,6 @@ export default function Detail({ task }) {
 
   return (
     <>
-      <BarsOutlined onClick={showTaskDetail} />
       <Modal
         title={<EditOutlined onClick={readonly ? showTaskEdit : handleSave} />}
         open={isDetailOpen}
@@ -53,8 +46,6 @@ export default function Detail({ task }) {
         >
           <ProFormText name="title" label="title" />
           <ProFormText name="description" label="description" />
-          <Assignee assignee={task.assignee} />
-          <Priority priority={task.priority} />
           <ProFormDateTimePicker name="dueTime" label="Due Time" />
           <ProFormDateTimePicker name="startDate" label="Start Date" />
         </ProForm>

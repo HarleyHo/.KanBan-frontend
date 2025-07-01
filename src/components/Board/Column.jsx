@@ -2,7 +2,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import Item from "./Item";
+import Task from "./Task";
 import { Card } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDroppable } from "@dnd-kit/core";
@@ -35,7 +35,7 @@ export default function Column({ column, onAddTask }) {
       <SortableContext items={column.tasks} strategy={verticalListSortingStrategy}>
         <div ref={setNodeRef}>
           {column.tasks.map((task) => (
-            <Item key={task.id} task={task} />
+            <Task key={task.id} task={task} />
           ))}
         </div>
       </SortableContext>

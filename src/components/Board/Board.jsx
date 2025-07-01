@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { closestCorners, DndContext } from "@dnd-kit/core";
+import {
+  closestCorners,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from "@dnd-kit/core";
 import Column from "./Column";
 import { Flex } from "antd";
 import { arrayMove } from "@dnd-kit/sortable";
@@ -14,7 +20,7 @@ export default function Board() {
   const [tasks, setTasks] = useState([
     {
       id: 101,
-      title: "Sample Task",
+      name: "Sample Task",
       description: "This is a sample task description.",
       assignee: "Maria",
       priority: "warning",
@@ -25,7 +31,7 @@ export default function Board() {
     },
     {
       id: 102,
-      title: "Another Task",
+      name: "Another Task",
       description: "This is another task description.",
       assignee: "John",
       priority: "normal",
@@ -98,6 +104,12 @@ export default function Board() {
     });
   };
 
+  const sensors = useSensors(useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 2,
+    },
+  }));
+
   const handleAddTask = (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
   };
@@ -107,6 +119,7 @@ export default function Board() {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       collisionDetection={closestCorners}
+      sensors={sensors}
     >
       <Flex>
         {columns.map((column) => (
