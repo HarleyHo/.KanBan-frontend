@@ -1,8 +1,9 @@
-import { useState } from "react";
-
+import "./task.css";
+import { useState, useEffect, useContext } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Detail from "./Detail";
+import { TaskContext } from "../Board/ContextFromBoard";
 
 function Task({ task }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -13,12 +14,42 @@ function Task({ task }) {
     transition,
   };
 
-  
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const handleClick = () => {
-    setIsDetailOpen(true)
+    setIsDetailOpen(true);
   };
+
+  const { setTasks } = useContext(TaskContext);
+
+  useEffect(() => {
+    if (task.status === 2) {
+      setTasks((prevTasks) =>
+        prevTasks.map((t) =>
+          t.id === task.id
+            ? {
+                ...t,
+                endDate: new Date()
+                  .toISOString()
+                  .replace("T", " ")
+                  .substring(0, 19),
+              }
+            : t
+        )
+      );
+    } else {
+      setTasks((prevTasks) =>
+        prevTasks.map((t) =>
+          t.id === task.id
+            ? {
+                ...t,
+                endDate: "",
+              }
+            : t
+        )
+      );
+    }
+  }, [task.status, task.id, setTasks]);
 
   return (
     <>

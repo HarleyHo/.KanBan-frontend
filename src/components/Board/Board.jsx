@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import "./board.css";
+import { useState, useEffect, useRef } from "react";
 import {
   closestCorners,
   DndContext,
   PointerSensor,
   useSensor,
-  useSensors
+  useSensors,
 } from "@dnd-kit/core";
 import Column from "./Column";
-import { Flex } from "antd";
 import { arrayMove } from "@dnd-kit/sortable";
+import { TaskContext, CountContext } from "./ContextFromBoard";
 
-export default function Board() {
+function Board() {
   const [columns, setColumns] = useState([
     { title: "To Do", tasks: [], status: 0 },
     { title: "In Progress", tasks: [], status: 1 },
@@ -24,9 +25,9 @@ export default function Board() {
       description: "This is a sample task description.",
       assignee: "Maria",
       priority: "warning",
-      dueTime: "2023-10-31",
+      dueDate: "2023-10-31",
       startDate: "2023-10-01",
-      endDate: "2023-10-15",
+      endDate: "",
       status: 0,
     },
     {
@@ -35,9 +36,9 @@ export default function Board() {
       description: "This is another task description.",
       assignee: "John",
       priority: "normal",
-      dueTime: "2024-10-31",
-      startDate: "2022-10-01",
-      endDate: "2023-10-15",
+      dueDate: "2024-01-31",
+      startDate: "2023-10-01",
+      endDate: "",
       status: 0,
     },
   ]);
@@ -104,32 +105,42 @@ export default function Board() {
     });
   };
 
-  const sensors = useSensors(useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 2,
-    },
-  }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 2,
+      },
+    })
+  );
 
-  const handleAddTask = (newTask) => {
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-  };
+  const newTaskCount = useRef(1);
 
   return (
-    <DndContext
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-      collisionDetection={closestCorners}
-      sensors={sensors}
-    >
-      <Flex>
-        {columns.map((column) => (
-          <Column
-            key={column.status}
-            column={column}
-            onAddTask={handleAddTask}
-          />
-        ))}
-      </Flex>
-    </DndContext>
+    <div className="task-box">
+      <header className="board-header">
+        <h1 className="board-title">Board</h1>
+      </header>
+      <DndContext
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+        collisionDetection={closestCorners}
+        sensors={sensors}
+      >
+        <div className="board-body">
+          {columns.map((column) => (
+            <TaskContext.Provider key={column.status} value={{ setTasks }}>
+              <CountContext.Provider
+                key={column.status}
+                value={{ newTaskCount }}
+              >
+                <Column key={column.status} column={column} />
+              </CountContext.Provider>
+            </TaskContext.Provider>
+          ))}
+        </div>
+      </DndContext>
+    </div>
   );
 }
+
+export default Board;

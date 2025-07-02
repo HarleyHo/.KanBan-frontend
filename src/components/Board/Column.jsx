@@ -2,43 +2,63 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import Task from "./Task";
-import { Card } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import Task from "../Task/Task";
 import { useDroppable } from "@dnd-kit/core";
+import { PlusOutlined } from "@ant-design/icons";
+import { TaskContext, CountContext } from "./ContextFromBoard";
+import { useContext } from "react";
 
-function Plus({ status }) {
-  if (status === 2) {
-    return null; // Don't show the add button for the "Done" column
-  }
+const AddTaskButton = ({ status, onAddTask }) => {
+  if (status === 2) return <div className="add-task-button" />;
   return (
-    <>
+    <div className="add-task-button" onClick={onAddTask}>
       <PlusOutlined />
-    </>
+    </div>
   );
-}
+};
 
-export default function Column({ column, onAddTask }) {
+function Column({ column }) {
+  const { setTasks } = useContext(TaskContext);
+  const { newTaskCount } = useContext(CountContext)
+  
+  const handleAddTask = () => {
+    setTasks((prevTasks) => {
+      const newTask = {
+        id: prevTasks.length + 1,
+        name: "New Task " + newTaskCount.current,
+        description: "",
+        assignee: "",
+        priority: "",
+        dueDate: "",
+        startDate: "",
+        endDate: "",
+        status: column.status,
+      };
+      return [...prevTasks, newTask];
+    });
+    newTaskCount.current++;
+  };
+
   const { setNodeRef } = useDroppable({
     id: column.status,
   });
 
-  const handleClick = () => {
-    onAddTask();
-  };
-
   return (
-    <Card
-      title={column.title}
-      actions={[<Plus status={column.status} onClick={handleClick} />]}
-    >
-      <SortableContext items={column.tasks} strategy={verticalListSortingStrategy}>
-        <div ref={setNodeRef}>
+    <div className="column">
+      {column.title}
+      <AddTaskButton status={column.status} onAddTask={handleAddTask} />
+      <SortableContext
+        items={column.tasks}
+        strategy={verticalListSortingStrategy}
+      >
+        <div className="column-droppable" ref={setNodeRef}>
           {column.tasks.map((task) => (
             <Task key={task.id} task={task} />
           ))}
         </div>
       </SortableContext>
-    </Card>
+    </div>
   );
 }
+
+export default Column;

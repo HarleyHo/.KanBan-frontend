@@ -1,7 +1,7 @@
 import { Select, Space } from "antd";
 import { DownOutlined, MinusOutlined, UpOutlined } from "@ant-design/icons";
 
-export default function Priority ({priority}) {
+export default function Priority({ priority }) {
   const handleChange = (value) => {
     console.log(`Selected priority: ${value}`);
   };
@@ -24,7 +24,9 @@ export default function Priority ({priority}) {
 
   return (
     <Select
-      defaultValue={options.find((option) => option.value === priority) || options[0]}
+      defaultValue={
+        options.find((option) => option.value === priority) || options[0]
+      }
       onChange={handleChange}
       options={options}
       optionRender={(option) => (
@@ -37,4 +39,4 @@ export default function Priority ({priority}) {
       )}
     />
   );
-};
+}
