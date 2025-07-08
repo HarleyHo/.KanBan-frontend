@@ -15,6 +15,7 @@ The frontend is communicating with database for synchronization via a RESTful AP
 - [X] **Draggable**
 - [X] **API Connecting**
 - [X] **Event and Task modifiable**
+### To Do
 - [ ] UI/UX Optimization
 - [ ] Deployed on AWS
 
