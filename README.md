@@ -18,6 +18,8 @@ The frontend is communicating with database for synchronization via a RESTful AP
 ### To Do
 - [ ] UI/UX Optimization
 - [ ] Deployed on AWS
+### Further Ideas
+-[ ] Deployed this project on VS Code Plugins (That's why this project called VS Agile :smile:)
 
 ## Dependencies
 - **Draggable** is contributed by [dnd kit](https://dndkit.com/).
