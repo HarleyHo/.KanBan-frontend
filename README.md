@@ -19,6 +19,6 @@ The frontend is communicating with database for synchronization via a RESTful AP
 - [ ] Deployed on AWS
 
 ## Dependencies
-- **Draggable** is contributed by [React-DnD](https://dndkit.com/).
+- **Draggable** is contributed by [dnd kit](https://dndkit.com/).
 - **UI** components mostly comes from [Ant-Design](https://ant.design/).
 
