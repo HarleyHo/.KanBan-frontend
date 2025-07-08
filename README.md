@@ -6,7 +6,7 @@ A Kanban App with synchronization and role management, developed with full-stack
 
 This project contains the frontend of the application, developed with React.js and Vite.
 
-The project is refactored base on the previous developed project [vs-agile](https://github.com/HarleyHo/vue-agile), trying to change language from Vue.js to React.js.
+The project is refactored base on the previous developed project [vue-agile](https://github.com/HarleyHo/vue-agile), trying to change language from Vue.js to React.js.
 
 The frontend is communicating with database for synchronization via a RESTful API [backend](https://github.com/HarleyHo/vs-agile-backend).
 
