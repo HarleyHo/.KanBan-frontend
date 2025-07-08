@@ -1,15 +1,24 @@
 # VS Agile
 
-A Kanban App with synchronization and role management, developed with full-stack seperation.
+A Kanban App with synchronization and role management, developed with full-stack separation.
 
-## Frontend
+## This Project
 
-This Frontend is developed with React.js and Vite.
+This project contains the frontend of the application, developed with React.js and Vite.
 
+The project is refactored base on the previous developed project [vs-agile](https://github.com/HarleyHo/vue-agile), trying to change language from Vue.js to React.js.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The frontend is communicating with database for synchronization via a RESTful API [backend](https://github.com/HarleyHo/vs-agile-backend).
 
-## Expanding the ESLint configuration
+## Features
+- [X] **Change Language**
+- [X] **Draggable**
+- [X] **API Connecting**
+- [X] **Event and Task modifiable**
+- [ ] UI/UX Optimization
+- [ ] Deployed on AWS
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Dependencies
+- **Draggable** is contributed by [React-DnD](https://dndkit.com/).
+- **UI** components mostly comes from [Ant-Design](https://ant.design/).
+
