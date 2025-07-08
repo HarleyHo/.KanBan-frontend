@@ -19,6 +19,7 @@ The frontend is communicating with database for synchronization via a RESTful AP
 - [ ] UI/UX Optimization
 - [ ] Deployed on AWS
 ### Further Ideas
+- [ ] Notification by e-mail
 - [ ] Deployed this project on VS Code Plugins (That's why this project called VS Agile :smirk:)
 
 ## Dependencies
