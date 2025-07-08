@@ -1,5 +1,5 @@
 import "./board.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   closestCorners,
   DndContext,
@@ -9,7 +9,11 @@ import {
 } from "@dnd-kit/core";
 import Column from "./Column";
 import { arrayMove } from "@dnd-kit/sortable";
-import { TaskContext, CountContext } from "./ContextFromBoard";
+import { TaskContext, CountContext } from "../../contexts/TaskContext";
+import { UserContext } from "../../contexts/UserContext";
+import { Avatar } from "antd";
+import { fetchTasks } from "../../services/taskService";
+import { CurrentEventIdContext } from "../../contexts/EventContext";
 
 function Board() {
   const [columns, setColumns] = useState([
@@ -18,30 +22,14 @@ function Board() {
     { title: "Done", tasks: [], status: 2 },
   ]);
 
-  const [tasks, setTasks] = useState([
-    {
-      id: 101,
-      name: "Sample Task",
-      description: "This is a sample task description.",
-      assignee: "Maria",
-      priority: "warning",
-      dueDate: "2023-10-31",
-      startDate: "2023-10-01",
-      endDate: "",
-      status: 0,
-    },
-    {
-      id: 102,
-      name: "Another Task",
-      description: "This is another task description.",
-      assignee: "John",
-      priority: "normal",
-      dueDate: "2024-01-31",
-      startDate: "2023-10-01",
-      endDate: "",
-      status: 0,
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
+  const { currentEventId } = useContext(CurrentEventIdContext);
+
+  useEffect(() => {
+    fetchTasks({ eventId: currentEventId }).then((result) => {
+      setTasks([...result.data]);
+    });
+  }, [currentEventId, setTasks]);
 
   useEffect(() => {
     setColumns((prevColumns) => {
@@ -115,11 +103,18 @@ function Board() {
 
   const newTaskCount = useRef(1);
 
+  const { users } = useContext(UserContext);
+
   return (
     <div className="task-box">
       <header className="board-header">
         <h1 className="board-title">Board</h1>
       </header>
+      <Avatar.Group>
+        {users.map((user) => (
+          <Avatar src={user.iconUrl} />
+        ))}
+      </Avatar.Group>
       <DndContext
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}

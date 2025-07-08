@@ -1,42 +1,29 @@
-import { Select, Space } from "antd";
-import { DownOutlined, MinusOutlined, UpOutlined } from "@ant-design/icons";
+import { Select } from "antd";
+import { useContext } from "react";
+import { TempTaskContext, PriorityContext } from "../../contexts/TaskContext";
 
-export default function Priority({ priority }) {
-  const handleChange = (value) => {
-    console.log(`Selected priority: ${value}`);
+function Priority() {
+  const { tempTask, setTempTask, handleBlur } = useContext(TempTaskContext);
+  const { priorityOptions } = useContext(PriorityContext);
+
+  const handleChange = (e) => {
+    setTempTask((prev) => ({
+      ...prev,
+      priority: e,
+    }));
   };
-
-  const options = [
-    {
-      value: "normal",
-      label: <DownOutlined />,
-      desc: "Normal",
-      color: "green",
-    },
-    {
-      value: "warning",
-      label: <MinusOutlined />,
-      desc: "Warning",
-      color: "yellow",
-    },
-    { value: "danger", label: <UpOutlined />, desc: "Danger", color: "red" },
-  ];
 
   return (
     <Select
-      defaultValue={
-        options.find((option) => option.value === priority) || options[0]
-      }
-      onChange={handleChange}
-      options={options}
-      optionRender={(option) => (
-        <Space style={{ color: option.data.color }}>
-          <span aria-label={option.data.label} role="img">
-            {option.data.label}
-          </span>
-          {option.data.desc}
-        </Space>
+      value={priorityOptions.find(
+        (opt) => opt.id === tempTask.priority
       )}
+      style={{ width: 120 }}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      options={priorityOptions}
     />
   );
 }
+
+export default Priority;

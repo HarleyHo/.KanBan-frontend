@@ -1,39 +1,34 @@
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import { TempTaskContext } from "../../contexts/TaskContext";
 import { Avatar, Select, Space } from "antd";
 
-function Assignee() {
+function Manager({ event, setEvent, handleOK }) {
   const { users } = useContext(UserContext);
-  const { tempTask, setTempTask, handleBlur } = useContext(TempTaskContext);
 
-  const assignees = [];
+  const managers = [];
   users
-    .filter((user) => user.role === 1)
+    .filter((user) => user.role === 0)
     .map((user) => {
-      assignees.push({
+      managers.push({
         id: user.id,
         label: <Avatar src={user.iconUrl} />,
         value: user.name,
       });
     });
-
   const handleChange = (e) => {
-    setTempTask((prev) => ({
+    setEvent((prev) => ({
       ...prev,
-      assignee: assignees.find((assignee) => assignee.value === e).id,
+      manager: managers.find((manager) => manager.value === e).id,
     }));
   };
 
   return (
     <Select
-      value={assignees.find(
-        (assignee) => assignee.id === tempTask.assigneeId
-      )}
-      options={assignees}
+      value={managers.find((manager) => manager.id === event.managerId)}
+      options={managers}
       style={{ width: 120 }}
       onChange={handleChange}
-      onBlur={handleBlur}
+      onBlur={handleOK}
       optionRender={(option) => (
         <Space>
           <div>{option.data.label}</div>
@@ -44,4 +39,4 @@ function Assignee() {
   );
 }
 
-export default Assignee;
+export default Manager;

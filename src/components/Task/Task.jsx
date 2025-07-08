@@ -2,8 +2,34 @@ import "./task.css";
 import { useState, useEffect, useContext } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import Detail from "./Detail";
-import { TaskContext } from "../Board/ContextFromBoard";
+import Detail from "./TaskDetail";
+import { TaskContext, PriorityContext } from "../../contexts/TaskContext";
+import { UserContext } from "../../contexts/UserContext";
+import { Avatar } from "antd";
+import {
+  DownOutlined,
+  MinusOutlined,
+  UpOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+
+const priorityOptions = [
+  {
+    id: 0,
+    label: <DownOutlined style={{ color: "green" }} />,
+    value: "Normal",
+  },
+  {
+    id: 1,
+    label: <MinusOutlined style={{ color: "yellow" }} />,
+    value: "Warning",
+  },
+  {
+    id: 2,
+    label: <UpOutlined style={{ color: "red" }} />,
+    value: "Danger",
+  },
+];
 
 function Task({ task }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -15,12 +41,12 @@ function Task({ task }) {
   };
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const { setTasks } = useContext(TaskContext);
+  const { users } = useContext(UserContext);
 
   const handleClick = () => {
     setIsDetailOpen(true);
   };
-
-  const { setTasks } = useContext(TaskContext);
 
   useEffect(() => {
     if (task.status === 2) {
@@ -31,8 +57,7 @@ function Task({ task }) {
                 ...t,
                 endDate: new Date()
                   .toISOString()
-                  .replace("T", " ")
-                  .substring(0, 19),
+                  .substring(0, 10),
               }
             : t
         )
@@ -62,12 +87,34 @@ function Task({ task }) {
         onClick={handleClick}
       >
         <h2 className="task-name over-hide">{task.name}</h2>
+        {users.some((user) => user.id === task.assigneeId) ? (
+          <Avatar
+            src={users.find((user) => user.id === task.assigneeId).iconUrl}
+          />
+        ) : (
+          <Avatar icon={<UserOutlined />} />
+        )}
+        {priorityOptions.some(
+          (opt) => opt.id === task.priority
+        ) ? (
+          <div>
+            {
+              priorityOptions.find(
+                (opt) => opt.id === task.priority
+              ).label
+            }
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
-      <Detail
-        task={task}
-        isDetailOpen={isDetailOpen}
-        setIsDetailOpen={setIsDetailOpen}
-      />
+      <PriorityContext.Provider value={{ priorityOptions }}>
+        <Detail
+          task={task}
+          isDetailOpen={isDetailOpen}
+          setIsDetailOpen={setIsDetailOpen}
+        />
+      </PriorityContext.Provider>
     </>
   );
 }

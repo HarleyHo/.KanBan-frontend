@@ -5,7 +5,10 @@ import {
   DeleteOutlined,
   ShareAltOutlined,
 } from "@ant-design/icons";
-import { TaskContext } from "../Board/ContextFromBoard";
+import { TaskContext } from "../../contexts/TaskContext";
+import { TempTaskContext } from "../../contexts/TaskContext";
+import Assignee from "./Assignee";
+import Priority from "./Priority";
 
 function Detail({ task, isDetailOpen, setIsDetailOpen }) {
   const [readonly, setReadonly] = useState(true);
@@ -13,8 +16,8 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
   const [tempTask, setTempTask] = useState(task);
 
   const handleCancel = () => {
-    setIsDetailOpen(false);
     setReadonly(true);
+    setIsDetailOpen(false);
   };
 
   const handleDelete = () => {
@@ -85,6 +88,12 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
             onChange={handleChange}
             onBlur={handleBlur}
           />
+          <TempTaskContext.Provider
+            value={{ tempTask, setTempTask, handleBlur }}
+          >
+            Assignee: <Assignee />
+            Priority: <Priority />
+          </TempTaskContext.Provider>
           Start Date:{" "}
           <input
             type="date"

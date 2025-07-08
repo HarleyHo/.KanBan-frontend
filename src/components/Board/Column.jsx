@@ -5,7 +5,7 @@ import {
 import Task from "../Task/Task";
 import { useDroppable } from "@dnd-kit/core";
 import { PlusOutlined } from "@ant-design/icons";
-import { TaskContext, CountContext } from "./ContextFromBoard";
+import { TaskContext, CountContext } from "../../contexts/TaskContext";
 import { useContext } from "react";
 
 const AddTaskButton = ({ status, onAddTask }) => {
@@ -19,12 +19,12 @@ const AddTaskButton = ({ status, onAddTask }) => {
 
 function Column({ column }) {
   const { setTasks } = useContext(TaskContext);
-  const { newTaskCount } = useContext(CountContext)
-  
+  const { newTaskCount } = useContext(CountContext);
+
   const handleAddTask = () => {
     setTasks((prevTasks) => {
       const newTask = {
-        id: prevTasks.length + 1,
+        id: prevTasks[prevTasks.length - 1].id + 1,
         name: "New Task " + newTaskCount.current,
         description: "",
         assignee: "",
