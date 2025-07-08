@@ -23,5 +23,5 @@ The frontend is communicating with database for synchronization via a RESTful AP
 
 ## Dependencies
 - **Draggable** is contributed by [dnd kit](https://dndkit.com/).
-- **UI** components mostly comes from [Ant-Design](https://ant.design/).
+- **UI** components mostly comes from [Ant Design](https://ant.design/).
 
