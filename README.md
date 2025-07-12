@@ -11,7 +11,7 @@ The project is refactored base on my previous developed project [vue-agile](http
 The frontend is communicating with database on AWS RDS for synchronization via a RESTful API [backend](https://github.com/HarleyHo/vs-agile-backend).
 
 ## Features
-- [X] **Change Language**
+- [X] **Rebuilding**
 - [X] **Draggable**
 - [X] **API Connecting**
 - [X] **Event and Task modifiable**
