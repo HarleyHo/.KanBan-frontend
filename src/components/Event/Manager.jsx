@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Avatar, Select, Space } from "antd";
 
-function Manager({ event, setEvent, handleOK }) {
+function Manager({ event, setEvent, onSave }) {
   const { users } = useContext(UserContext);
 
   const managers = [];
@@ -15,6 +15,7 @@ function Manager({ event, setEvent, handleOK }) {
         value: user.name,
       });
     });
+
   const handleChange = (e) => {
     setEvent((prev) => ({
       ...prev,
@@ -28,7 +29,7 @@ function Manager({ event, setEvent, handleOK }) {
       options={managers}
       style={{ width: 120 }}
       onChange={handleChange}
-      onBlur={handleOK}
+      onBlur={onSave}
       optionRender={(option) => (
         <Space>
           <div>{option.data.label}</div>

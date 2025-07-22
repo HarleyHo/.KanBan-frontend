@@ -55,9 +55,7 @@ function Task({ task }) {
           t.id === task.id
             ? {
                 ...t,
-                endDate: new Date()
-                  .toISOString()
-                  .substring(0, 10),
+                endDate: new Date().toISOString().substring(0, 10),
               }
             : t
         )
@@ -87,26 +85,22 @@ function Task({ task }) {
         onClick={handleClick}
       >
         <h2 className="task-name over-hide">{task.name}</h2>
-        {users.some((user) => user.id === task.assigneeId) ? (
-          <Avatar
-            src={users.find((user) => user.id === task.assigneeId).iconUrl}
-          />
-        ) : (
-          <Avatar icon={<UserOutlined />} />
-        )}
-        {priorityOptions.some(
-          (opt) => opt.id === task.priority
-        ) ? (
-          <div>
-            {
-              priorityOptions.find(
-                (opt) => opt.id === task.priority
-              ).label
-            }
-          </div>
-        ) : (
-          <div />
-        )}
+        <div className="task-info">
+          {priorityOptions.some((opt) => opt.id === task.priority) ? (
+            <div className="task-info-priority">
+              {priorityOptions.find((opt) => opt.id === task.priority).label}
+            </div>
+          ) : (
+            <div className="task-info-priority"/>
+          )}
+          {users.some((user) => user.id === task.assigneeId) ? (
+            <Avatar className="task-info-avatar"
+              src={users.find((user) => user.id === task.assigneeId).iconUrl}
+            />
+          ) : (
+            <Avatar className="task-info-avatar" icon={<UserOutlined />} />
+          )}
+        </div>
       </div>
       <PriorityContext.Provider value={{ priorityOptions }}>
         <Detail

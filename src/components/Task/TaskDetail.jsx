@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Modal, Result } from "antd";
 import { useState, useContext } from "react";
 import {
   CloseOutlined,
@@ -9,6 +9,8 @@ import { TaskContext } from "../../contexts/TaskContext";
 import { TempTaskContext } from "../../contexts/TaskContext";
 import Assignee from "./Assignee";
 import Priority from "./Priority";
+import { deleteTask, editTask } from "../../services/taskService";
+import "./task.css";
 
 function Detail({ task, isDetailOpen, setIsDetailOpen }) {
   const [readonly, setReadonly] = useState(true);
@@ -28,7 +30,9 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
       okType: "danger",
       cancelText: "Cancel",
       onOk() {
-        setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
+        deleteTask({ taskId: task.id }).then(() => {
+          setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
+        });
         setIsDetailOpen(false);
       },
     });
@@ -47,9 +51,12 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
   };
 
   const handleBlur = () => {
-    setTasks((prevTasks) =>
-      prevTasks.map((t) => (t.id === task.id ? { ...t, ...tempTask } : t))
-    );
+    editTask({ task: tempTask }).then((result) => {
+      setTasks((prevTasks) =>
+        prevTasks.map((t) => (t.id === task.id ? { ...t, ...result.data } : t))
+      );
+    });
+
     setReadonly(true);
   };
 
@@ -58,27 +65,29 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
       title={null}
       open={isDetailOpen}
       onCancel={handleCancel}
-      closable={false}
       footer={null}
+      wrapClassName={"task-detail"}
     >
-      <div>
-        <ShareAltOutlined />
-        <DeleteOutlined onClick={handleDelete} />
-        <CloseOutlined onClick={handleCancel} />
+      <div className="task-detail-bar">
+        <ShareAltOutlined className="task-detail-bar-icon" />
+        <DeleteOutlined
+          onClick={handleDelete}
+          className="task-detail-bar-icon"
+        />
       </div>
-      <div>
-        <form>
-          Name:{" "}
-          <input
-            type="text"
-            name="name"
-            value={tempTask.name}
-            readOnly={readonly}
-            onFocus={handleFocus}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          Description:{" "}
+      <form className="task-detail-form">
+        <input
+          type="text"
+          name="name"
+          value={tempTask.name}
+          readOnly={readonly}
+          onFocus={handleFocus}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className="task-detail-name"
+        />
+        <div className="task-detail-description">
+          Description
           <input
             type="textarea"
             name="description"
@@ -88,12 +97,16 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          <TempTaskContext.Provider
-            value={{ tempTask, setTempTask, handleBlur }}
-          >
-            Assignee: <Assignee />
-            Priority: <Priority />
-          </TempTaskContext.Provider>
+        </div>
+        <TempTaskContext.Provider value={{ tempTask, setTempTask, handleBlur }}>
+          <div>
+            Assignee: <Assignee className="task-detail-assignee" />
+          </div>
+          <div>
+            Priority: <Priority className="task-detail-priority" />
+          </div>
+        </TempTaskContext.Provider>
+        <div className="task-detail-start-date">
           Start Date:{" "}
           <input
             type="date"
@@ -104,6 +117,8 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
             onChange={handleChange}
             onBlur={handleBlur}
           />
+        </div>
+        <div className="task-detail-due-date">
           Due Date:{" "}
           <input
             type="date"
@@ -114,8 +129,8 @@ function Detail({ task, isDetailOpen, setIsDetailOpen }) {
             onChange={handleChange}
             onBlur={handleBlur}
           />
-        </form>
-      </div>
+        </div>
+      </form>
     </Modal>
   );
 }

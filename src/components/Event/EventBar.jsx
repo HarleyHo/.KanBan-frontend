@@ -1,24 +1,22 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { useState, useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext } from "react";
 import Event from "./Event";
-import {
-  CurrentEventIdContext,
-  EventContext,
-} from "../../contexts/EventContext";
+import { CurrentEventContext, EventContext } from "../../contexts/EventContext";
 import { addEvent, fetchEvents } from "../../services/eventService";
+import "./event.css";
 
 const AddEventButton = ({ onClick }) => {
   return (
-    <div className="add-button" onClick={onClick}>
+    <div className="add-event-button" onClick={onClick}>
       <PlusOutlined />
     </div>
   );
 };
 
 function EventBar() {
-  const newTaskCount = useRef(1);
-  const [events, setEvents] = useState([]);
-  const { setCurrentEventId } = useContext(CurrentEventIdContext);
+  const newEventCount = useRef(1);
+  const { events, setEvents } = useContext(EventContext);
+  const { setCurrentEvent } = useContext(CurrentEventContext);
 
   useEffect(() => {
     fetchEvents().then((result) => {
@@ -32,39 +30,36 @@ function EventBar() {
   }, [setEvents]);
 
   useEffect(() => {
-    if (events.length > 0) setCurrentEventId(events[0].id);
-  }, [events, setCurrentEventId]);
+    if (events.length > 0) setCurrentEvent(events[0]);
+  }, [events, setCurrentEvent]);
 
-  const handleAddTask = () => {
+  const handleAddEvent = () => {
     const newEvent = {
-      name: "New Event " + newTaskCount.current,
-      manager: "",
+      name: "New Event " + newEventCount.current,
+      managerId: "",
       startDate: "",
       endDate: "",
       status: 0,
     };
 
     addEvent({ event: newEvent }).then((result) => {
-      console.log(result);
       setEvents((prevEvents) => {
         return [...prevEvents, result.data];
       });
     });
 
-    newTaskCount.current++;
+    newEventCount.current++;
   };
 
   return (
     <>
       <div className="event-bar">
-        <h1 className="event-bar-title">VS Agile</h1>
-        <AddEventButton onClick={handleAddTask} />
+        <h1 className="event-bar-title">Project 1</h1>
+        <AddEventButton onClick={handleAddEvent} />
         <div className="event-container">
-          <EventContext.Provider value={{ setEvents }}>
-            {events.map((event) => (
-              <Event key={event.id} event={event} />
-            ))}
-          </EventContext.Provider>
+          {events.map((event) => (
+            <Event key={event.id} event={event} />
+          ))}
         </div>
       </div>
     </>

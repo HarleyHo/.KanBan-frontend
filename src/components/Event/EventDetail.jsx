@@ -1,28 +1,25 @@
-import { useState, useContext } from "react";
-import { EventContext } from "../../contexts/EventContext";
-import { Modal, Button } from "antd";
+import { useState, useContext, useEffect } from "react";
+import { editEvent, deleteEvent } from "../../services/eventService";
+import { EventContext, CurrentEventContext } from "../../contexts/EventContext";
+import { Button, Modal } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import Manager from "./Manager";
 
-function Detail({ event, isDetailOpen, setIsDetailOpen }) {
+function EventDetail() {
   const { setEvents } = useContext(EventContext);
-  const [tempEvent, setTempEvent] = useState(event);
+  const { currentEvent } = useContext(CurrentEventContext);
+  const [tempEvent, setTempEvent] = useState(currentEvent);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  const handleCancel = () => {
-    setIsDetailOpen(false);
-  };
+  useEffect(() => {
+    setTempEvent((prev) => ({
+      ...prev,
+      ...currentEvent,
+    }));
+  }, [setTempEvent, currentEvent]);
 
-  const handleDelete = () => {
-    Modal.confirm({
-      title: "Delete " + event.name,
-      content: "Are you sure to delete this event?",
-      okText: "Delete",
-      okType: "danger",
-      cancelText: "Cancel",
-      onOk() {
-        setEvents((prevEvents) => prevEvents.filter((e) => e.id !== event.id));
-        setIsDetailOpen(false);
-      },
-    });
+  const handleOpen = () => {
+    setIsDetailOpen(true);
   };
 
   const handleChange = (e) => {
@@ -33,57 +30,69 @@ function Detail({ event, isDetailOpen, setIsDetailOpen }) {
     }));
   };
 
-  const handleOK = () => {
-    setEvents((prevEvents) =>
-      prevEvents.map((e) => (e.id === event.id ? { ...e, ...tempEvent } : e))
-    );
+  const handleSave = () => {
+    editEvent({ event: tempEvent }).then((result) => {
+      setEvents((prevEvents) =>
+        prevEvents.map((e) =>
+          e.id === result.data.id ? { ...e, ...result.data } : e
+        )
+      );
+    });
     setIsDetailOpen(false);
   };
 
+  const handleCancel = () => {
+    setIsDetailOpen(false);
+  };
+
+  const handleDelete = () => {
+    Modal.confirm({
+      title: "Delete " + tempEvent.name,
+      content: "Are you sure to delete this event?",
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk() {
+        deleteEvent({ eventId: tempEvent.id }).then(() => {
+          setEvents((prevEvents) =>
+            prevEvents.filter((e) => e.id !== tempEvent.id)
+          );
+        });
+      },
+    });
+  };
+
   return (
-    <Modal
-      title={null}
-      open={isDetailOpen}
-      onCancel={handleCancel}
-      onOK={handleOK}
-      footer={[
-        <Button key="delete" onClick={handleDelete}>
-          Delete
-        </Button>,
-        <Button key="cancel" onClick={handleCancel}>
-          Cancel
-        </Button>,
-        <Button key="ok" onClick={handleOK}>
-          OK
-        </Button>,
-      ]}
-    >
-      <div>
-        <form>
-          Name:{" "}
+    <>
+      <EditOutlined onClick={handleOpen} />
+      <Modal open={isDetailOpen} onCancel={handleCancel} onOk={handleSave}>
+        <label>
+          Name
           <input
             type="text"
             name="name"
             value={tempEvent.name}
             onChange={handleChange}
+            className="event-detail-name"
           />
-          Manager:{" "}
-          <Manager
-            event={tempEvent}
-            setEvent={setTempEvent}
-            handleOK={handleOK}
-          />
-          Start Date:{" "}
+        </label>
+        <Manager
+          event={tempEvent}
+          setEvent={setTempEvent}
+          onSave={handleSave}
+        />
+        <label>
+          Start Date
           <input
             type="date"
             name="startDate"
-            value={tempEvent.startDate || ""}
+            value={tempEvent.startDate}
             onChange={handleChange}
           />
-        </form>
-      </div>
-    </Modal>
+        </label>
+      </Modal>
+    </>
   );
 }
 
-export default Detail;
+export default EventDetail;

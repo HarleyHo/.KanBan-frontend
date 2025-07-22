@@ -1,15 +1,18 @@
+import "./task-box.css";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import Task from "../Task/Task";
+import Task from "./Task";
 import { useDroppable } from "@dnd-kit/core";
 import { PlusOutlined } from "@ant-design/icons";
 import { TaskContext, CountContext } from "../../contexts/TaskContext";
 import { useContext } from "react";
+import { CurrentEventContext } from "../../contexts/EventContext";
+import { addTask } from "../../services/taskService";
 
 const AddTaskButton = ({ status, onAddTask }) => {
-  if (status === 2) return <div className="add-task-button" />;
+  if (status === 2) return <div className="add-task-button-none"/>;
   return (
     <div className="add-task-button" onClick={onAddTask}>
       <PlusOutlined />
@@ -20,21 +23,23 @@ const AddTaskButton = ({ status, onAddTask }) => {
 function Column({ column }) {
   const { setTasks } = useContext(TaskContext);
   const { newTaskCount } = useContext(CountContext);
+  const { currentEvent } = useContext(CurrentEventContext);
 
   const handleAddTask = () => {
-    setTasks((prevTasks) => {
-      const newTask = {
-        id: prevTasks[prevTasks.length - 1].id + 1,
-        name: "New Task " + newTaskCount.current,
-        description: "",
-        assignee: "",
-        priority: "",
-        dueDate: "",
-        startDate: "",
-        endDate: "",
-        status: column.status,
-      };
-      return [...prevTasks, newTask];
+    const newTask = {
+      name: "New Task " + newTaskCount.current,
+      description: "",
+      assigneeId: "",
+      priority: "",
+      dueDate: "",
+      startDate: "",
+      endDate: "",
+      status: column.status,
+      eventId: currentEvent.id,
+    };
+
+    addTask({ task: newTask }).then((result) => {
+      setTasks((prevTasks) => [...prevTasks, result.data]);
     });
     newTaskCount.current++;
   };
@@ -45,8 +50,11 @@ function Column({ column }) {
 
   return (
     <div className="column">
-      {column.title}
-      <AddTaskButton status={column.status} onAddTask={handleAddTask} />
+      <div className="column-head">
+        {column.title}
+        <AddTaskButton status={column.status} onAddTask={handleAddTask} />
+      </div>
+
       <SortableContext
         items={column.tasks}
         strategy={verticalListSortingStrategy}
