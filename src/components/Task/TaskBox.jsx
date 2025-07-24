@@ -12,22 +12,24 @@ import { TaskContext, CountContext } from "../../contexts/TaskContext";
 import { fetchTasks } from "../../services/taskService";
 import Column from "./Column";
 import { CurrentEventContext } from "../../contexts/EventContext";
+import { editTask } from "../../services/taskService";
 
 function TaskBox() {
-  const [columns, setColumns] = useState([
-    { title: "To Do", tasks: [], status: 0 },
-    { title: "In Progress", tasks: [], status: 1 },
-    { title: "Done", tasks: [], status: 2 },
-  ]);
-
   const [tasks, setTasks] = useState([]);
   const { currentEvent } = useContext(CurrentEventContext);
-
+  
   useEffect(() => {
     fetchTasks({ eventId: currentEvent.id }).then((result) => {
       setTasks([...result.data]);
     });
   }, [currentEvent, setTasks]);
+
+  console.log(tasks);
+  const [columns, setColumns] = useState([
+    { title: "To Do", tasks: [], status: 0 },
+    { title: "In Progress", tasks: [], status: 1 },
+    { title: "Done", tasks: [], status: 2 },
+  ]);
 
   useEffect(() => {
     setColumns((prevColumns) => {
@@ -39,19 +41,19 @@ function TaskBox() {
   }, [tasks]);
 
   const findTargetColumn = ({ id }) => {
-    if (!id) return;
+    if (!Number.isFinite(id)) return NaN;
 
     if (columns.some((col) => col.status === id)) {
-      return columns.find((col) => col.status === id).status ?? NaN;
+      return columns.find((col) => col.status === id).status;
     } else {
-      return tasks.find((task) => task.id === id).status ?? NaN;
+      return tasks.find((task) => task.id === id).status;
     }
   };
 
   const handleDragOver = (event) => {
     const { active, over } = event;
-    const activeColumn = findTargetColumn({ id: active.id }) ?? NaN;
-    const overColumn = findTargetColumn({ id: over.id }) ?? NaN;
+    const activeColumn = findTargetColumn({ id: active.id });
+    const overColumn = findTargetColumn({ id: over.id });
 
     if (
       !Number.isFinite(activeColumn) ||
@@ -69,24 +71,29 @@ function TaskBox() {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    const activeColumn = findTargetColumn({ id: active.id }) ?? NaN;
-    const overColumn = findTargetColumn({ id: over.id }) ?? NaN;
+    const activeColumn = findTargetColumn({ id: active.id });
+    const overColumn = findTargetColumn({ id: over.id });
 
     if (
       !Number.isFinite(activeColumn) ||
       !Number.isFinite(overColumn) ||
-      activeColumn !== overColumn
+      activeColumn !== overColumn ||
+      active.id === over.id
     )
       return;
 
-    let columnTasks = columns.find((col) => col.status === activeColumn).tasks;
+    const columnTasks = columns.find(
+      (col) => col.status === activeColumn
+    ).tasks;
 
     const activeIndex = columnTasks.findIndex((task) => task.id === active.id);
     const overIndex = columnTasks.findIndex((task) => task.id === over.id);
-    columnTasks = arrayMove(columnTasks, activeIndex, overIndex);
+
     setColumns((prevColumns) => {
       return prevColumns.map((col) =>
-        col.status === activeColumn ? { ...col, tasks: columnTasks } : col
+        col.status === activeColumn
+          ? { ...col, tasks: arrayMove(columnTasks, activeIndex, overIndex) }
+          : col
       );
     });
   };

@@ -1,5 +1,6 @@
 .board {
   width: calc(100% - 300px);
+  min-width: 1070px;
 }
 
 .board-header {

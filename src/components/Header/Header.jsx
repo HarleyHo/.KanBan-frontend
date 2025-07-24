@@ -17,7 +17,7 @@ function Header() {
       <h3 className="header-name">VS Agile</h3>
       <div className="header-buttons">
         <AddProjectButton />
-        <InfoCircleOutlined className="setting-button" />
+        <InfoCircleOutlined className="info-button" />
         <div className="user">
           <User />
         </div>

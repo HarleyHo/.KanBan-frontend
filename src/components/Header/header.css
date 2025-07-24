@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   border-bottom: 1px solid #ededed;
+  min-width: 1370px;
 }
 
 .header-icon {
@@ -34,7 +35,7 @@
   margin: 0;
   margin-left: auto;
   margin-right: 20px;
-  padding: 0 10px;
+  padding: 0 20px;
 }
 
 .add-project-button:hover {
@@ -42,7 +43,7 @@
 }
 
 
-.setting-button {
+.info-button {
   margin: 10px 20px;
   font-size: 1.5em;
   cursor: pointer;
@@ -50,8 +51,8 @@
 }
 
 
-.setting-button:hover {
-  color: #e86a3d;
+.info-button:hover {
+  color: #bfbfbf;
 }
 
 .user {
