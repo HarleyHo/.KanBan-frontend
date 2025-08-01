@@ -1,4 +1,4 @@
-# VS Agile
+# .KanBan
 
 A Kanban App with synchronization and role management, developed with full-stack separation.
 
