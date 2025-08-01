@@ -20,9 +20,9 @@ The frontend is communicating with database on AWS RDS for synchronization via a
 - [ ] Deployed on AWS
 ### Further Ideas
 - [ ] Notification by e-mail
-- [ ] Deployed this project on VS Code Extensions (That's why this project called VS Agile :smirk:)
 
 ## Dependencies
 - **Draggable** is contributed by [dnd kit](https://dndkit.com/).
-- **UI** components mostly comes from [Ant Design](https://ant.design/).
+- UI components mostly comes from [Ant Design](https://ant.design/).
+- UI design reference [kanban-react](https://github.com/KelvinQiu802/kanban-react)
 
